@@ -1,12 +1,16 @@
 import kotlin.math.abs
 
 fun main() {
-    fun part1(input: List<String>): Long {
-        val pairs = input.map { line ->
-            val (l, r) = line.split("   ").map(String::toLong)
+
+    fun parseInput(input: List<String>): List<Pair<Int, Int>> {
+        return input.map { line ->
+            val (l, r) = line.split("   ").map(String::toInt)
             l to r
         }
+    }
 
+    fun part1(input: List<String>): Int {
+        val pairs = parseInput(input)
         val left = pairs.map { it.first }.sorted()
         val right = pairs.map { it.second }.sorted()
 
@@ -16,12 +20,20 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        val pairs = parseInput(input)
+        val left = pairs.map { it.first }
+        val right = pairs.map { it.second }
+
+        return left.sumOf { id ->
+            id * right.count { it == id }
+        }
     }
 
-    // Or read a large test input from the `src/Day01_test.txt` file:
-    val testInput = readInput("Day01_part1_test")
-    check(part1(testInput) == 11L) { "Test input check failed" }
+    val testInputPart1 = readInput("Day01_part1_test")
+    check(part1(testInputPart1) == 11) { "Part1 test failed" }
+
+    val testInputPart2 = readInput("Day01_part2_test")
+    check(part2(testInputPart1) == 31) { "Part2 test failed" }
 
     // Read the input from the `src/Day01.txt` file.
     val input = readInput("Day01")

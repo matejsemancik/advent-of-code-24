@@ -4,7 +4,7 @@ typealias CharMatrix = Array<CharArray>
 
 fun main() {
 
-    val masks: List<CharMatrix> = listOf(
+    val masksPart1: List<CharMatrix> = listOf(
         arrayOf(
             charArrayOf('X', 'M', 'A', 'S'),
         ),
@@ -49,6 +49,32 @@ fun main() {
         )
     )
 
+    val masksPart2Horizontal: List<CharMatrix> = listOf(
+        arrayOf(
+            charArrayOf('M', ' ', ' '),
+            charArrayOf(' ', 'A', ' '),
+            charArrayOf(' ', ' ', 'S')
+        ),
+        arrayOf(
+            charArrayOf('S', ' ', ' '),
+            charArrayOf(' ', 'A', ' '),
+            charArrayOf(' ', ' ', 'M')
+        ),
+    )
+
+    val masksPart2Vertical: List<CharMatrix> = listOf(
+        arrayOf(
+            charArrayOf(' ', ' ', 'S'),
+            charArrayOf(' ', 'A', ' '),
+            charArrayOf('M', ' ', ' ')
+        ),
+        arrayOf(
+            charArrayOf(' ', ' ', 'M'),
+            charArrayOf(' ', 'A', ' '),
+            charArrayOf('S', ' ', ' ')
+        ),
+    )
+
     fun hasIntersect(source: CharMatrix, mask: CharMatrix, atOffset: Pair<Int, Int>): Boolean {
         val maskWidth = mask[0].size
         val maskHeight = mask.size
@@ -69,11 +95,11 @@ fun main() {
     }
 
     fun part1(input: List<String>): Int {
-        var hits = 0
         val source: CharMatrix = input.map { it.toCharArray() }.toTypedArray()
+        var hits = 0
         for (y in source.indices) {
             for (x in source[0].indices) {
-                for (mask in masks) {
+                for (mask in masksPart1) {
                     if (hasIntersect(source, mask, x to y)) {
                         hits++
                     }
@@ -84,11 +110,29 @@ fun main() {
     }
 
     fun part2(input: List<String>): Int {
-        return input.size
+        val source: CharMatrix = input.map { it.toCharArray() }.toTypedArray()
+        var hits = 0
+        for (y in source.indices) {
+            for (x in source[0].indices) {
+                val hasHorizontalIntersect = masksPart2Horizontal.any { mask ->
+                    hasIntersect(source, mask, x to y)
+                }
+                val hasVerticalIntersect = masksPart2Vertical.any { mask ->
+                    hasIntersect(source, mask, x to y)
+                }
+                if (hasHorizontalIntersect && hasVerticalIntersect) {
+                    hits++
+                }
+            }
+        }
+        return hits
     }
 
     val testInputPart1 = readInput("${Day}_part1_test")
     check(part1(testInputPart1) == 18) { "Part1 test failed" }
+
+    val testInputPart2 = readInput("${Day}_part2_test")
+    check(part2(testInputPart2) == 9) { "Part2 test failed" }
 
     val input = readInput(Day)
     part1(input).println()
